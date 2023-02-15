@@ -4,14 +4,14 @@ API for the ratings portion of Atelier backend.
 ## ETL scripts
 ETL scripts for importing CSV files to Postgres (ETLpostgres) and Mongo (ETLmongo).  
   
-ETLpostgres >  
+For importing data to Postgres from CSV files : 
   
 ```node ETLpostgres.js```   
   
  **Note : For Postgres, it's required that the order of your columns as defined in the schema match the order of columns as they appear in the CSV file.**  
 
   
-ETLmongo >  
+For importing data to Mongo from CSV files :
   
 ```sh ETLmongo.sh```  
 
