@@ -1,5 +1,5 @@
 # RatingsAPI
-API for the ratings portion of Atelier backend.
+API for the ratings portion of Atelier storefront backend.
 
 ## ETL scripts
 ETL scripts for importing CSV files to Postgres (ETLpostgres) and Mongo (ETLmongo).  
