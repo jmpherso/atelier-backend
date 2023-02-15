@@ -1,4 +1,18 @@
 # RatingsAPI
-API for the ratings portion of Atelier backend.
+API for the ratings portion of Atelier storefront backend.
 
-ESL scripts for importing CSV data into both a Postgres DB and a Mongo DB.
+## ETL scripts
+ETL scripts for importing CSV files to Postgres (ETLpostgres) and Mongo (ETLmongo).  
+  
+For importing data to Postgres from CSV files : 
+  
+```node ETLpostgres.js```   
+  
+ **Note : For Postgres, it's required that the order of your columns as defined in the schema match the order of columns as they appear in the CSV file.**  
+
+  
+For importing data to Mongo from CSV files :
+  
+```sh ETLmongo.sh```  
+
+**Note : Both scripts require the files listed in the scripts to function, for usage on other files be sure to change the filenames and filepaths. For example, 'reviews.csv' to 'questions.csv'.**
