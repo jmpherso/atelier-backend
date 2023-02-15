@@ -9,6 +9,6 @@
     "pg": "^8.9.0"
   },
   "scripts": {
-    "server": "nodemon ./server.js"
+    "server": "nodemon ./server/server.js"
   }
 }
