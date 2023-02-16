@@ -1,10 +1,11 @@
 // Basic Postgres DB connection
+require('dotenv').config();
 const { Client } = require('pg');
 const dbserver = new Client({
     user: 'postgres',
     host: 'localhost',
     database: 'reviewsandratings',
-    password: 'pokemon10',
+    password: 'process.env.PASSWORD',
     port: 5432,
 });
 
