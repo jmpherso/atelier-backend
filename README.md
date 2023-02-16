@@ -1,6 +1,12 @@
 # RatingsAPI
 API for the ratings portion of Atelier storefront backend.
 
+## Ratings and Review API server  
+The server the API is running on is a basic express server utilizing axios that handles POST/GET/PUT requests and calls 'model' functions to interact with the PostgreSQL database.
+
+## Ratings and Review Database Models  
+Also contained is a models file that describes multiple functions used to interact directly with the PostgreSQL database. These models are called within the express server file.
+
 ## ETL scripts
 ETL scripts for importing CSV files to Postgres (ETLpostgres) and Mongo (ETLmongo).  
   
