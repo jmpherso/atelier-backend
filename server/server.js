@@ -16,7 +16,6 @@ app.use(express.json());
 // app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/reviews', (req, res) => {
-  console.log('got request', req.query) //got request { product_id: '37311', sort: 'relevant', count: '250' }
   model.getAllReviews(req.query.product_id, req.query.count, req.query['sort'], (results) => {
     res.send(results);
   });
@@ -35,16 +34,16 @@ app.post('/reviews', (req, res) => {
 });
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  model.markHelpful(req.body, (result) => {
+  model.markHelpful(req.params, (result) => {
     res.sendStatus(201).send();
   });
 });
 
 app.put('/reviews/:review_id/report', (req, res) => {
-  model.markReported(req.body, (result) => {
+  model.markReported(req.params, (result) => {
     res.sendStatus(201).send();
   });
 });
 
 app.listen(process.env.PORT);
-console.log(`Server listening at http://localhost:${process.env.PORT}`);
+console.log(`Server listening at ${process.env.PORT}`);

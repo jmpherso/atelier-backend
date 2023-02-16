@@ -1,7 +1,7 @@
-// Basic Postgres DB connection
 require('dotenv').config();
+const fs = require('fs');
 const { Client } = require('pg');
-const dbserver = new Client({
+const client = new Client({
     user: 'postgres',
     host: 'localhost',
     database: 'reviewsandratings',
@@ -9,7 +9,6 @@ const dbserver = new Client({
     port: 5432,
 });
 
-dbserver.connect();
-console.log('Postgres connected, listening on port 5432')
+const readCSV = (file) => {
 
-module.exports = dbserver;
+
