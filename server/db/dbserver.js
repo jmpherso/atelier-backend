@@ -8,4 +8,7 @@ const dbserver = new Client({
     port: 5432,
 });
 
+dbserver.connect();
+console.log('Postgres connected, listening on port 5432')
+
 module.exports = dbserver;

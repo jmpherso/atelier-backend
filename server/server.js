@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const qanda = require('./model');
+const model = require('./model');
 const logger = require('./logger');
 const axios = require('axios');
 // const compression = require('compression');
@@ -15,14 +15,33 @@ app.use(express.json());
 // app.use(express.urlencoded());
 // app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/questions', (req, res) => {
-  qanda.getQuestionList(req.query.product_id, req.query.count, (results) => {
+app.get('/reviews', (req, res) => {
+  console.log('got request', req.query) //got request { product_id: '37311', sort: 'relevant', count: '250' }
+  model.getAllReviews(req.query.product_id, req.query.count, req.query['sort'], (results) => {
     res.send(results);
   });
 });
 
-app.post('/cart', (req, res) => {
-  qanda.postCart(req.body, (result) => {
+app.get('/reviews/meta', (req, res) => {
+  model.getProductMeta(req.query.product_id, (results) => {
+    res.send(results);
+  });
+});
+
+app.post('/reviews', (req, res) => {
+  model.postReview(req.body, (result) => {
+    res.sendStatus(201).send();
+  });
+});
+
+app.put('/reviews/:review_id/helpful', (req, res) => {
+  model.markHelpful(req.body, (result) => {
+    res.sendStatus(201).send();
+  });
+});
+
+app.put('/reviews/:review_id/report', (req, res) => {
+  model.markReported(req.body, (result) => {
     res.sendStatus(201).send();
   });
 });

@@ -1,27 +1,68 @@
 const db = require('./db/dbserver.js');
 const axios = require('axios');
 
-const getAllReviews = (product_id, count, callback) => {
-  db.connect();
-  db.query(`SELECT * FROM reviews WHERE product_id = ${product_id} LIMIT ${count}`, (err, results) => {
+const getAllReviews = (product_id, count, sortParam, callback) => { //ORDER BY ${sortParam}
+  db.query(`SELECT * FROM reviews WHERE product_id=${product_id} OFFSET 0 ROWS FETCH FIRST ${count} ROWS ONLY`, (err, results) => {
     if (err) {
+      console.log(err)
       callback(err);
     } else {
-      callback(results.rows);
+      callback({product : product_id, page : 0, count : count, results : results.rows});
     }
-    db.end();
   });
 };
 
-const getProductMeta = (product_id, count, callback) => {
-  db.connect();
-  db.query(`SELECT * FROM reviews WHERE product_id = ${product_id} LIMIT ${count}`, (err, results) => {
+const getProductMeta = (product_id, callback) => {
+  var meta = {};
+  meta.ratings = [0, 0, 0, 0, 0];
+  meta.recommended = {false : 0, true : 0};
+  meta.characteristics = {};
+  meta.reviewIDs = [];
+
+  db.query(`SELECT * FROM reviews WHERE product_id=${product_id}`, (err, results) => {
     if (err) {
+      console.log(err)
       callback(err);
     } else {
-      callback(results.rows);
+      for (let i = 0; i < results.rows.length; i++) {
+        meta.ratings[results.rows[i].rating - 1]++;
+        meta.recommended[results.rows[i].recommend]++;
+        meta.reviewIDs.push(results.rows[i].id);
+      }
+      meta.reviewIDs = meta.reviewIDs.join(', ')
+      console.log('METADATA', meta)
+      db.query(`SELECT * FROM characteristics WHERE product_id=${product_id}`, (err, resultsTwo) => {
+        if (err) {
+          console.log(err)
+          callback(err);
+        } else {
+          for (let i = 0; i < resultsTwo.rows.length; i++) {
+            meta.characteristics[resultsTwo.rows[i].id] = {};
+            meta.characteristics[resultsTwo.rows[i].id].id = resultsTwo.rows[i].id;
+            meta.characteristics[resultsTwo.rows[i].id].value = 0;
+            meta.characteristics[resultsTwo.rows[i].id].name = resultsTwo.rows[i].name;
+          }
+          console.log('METADATA', meta)
+          db.query(`SELECT * FROM characteristic_reviews WHERE review_id IN (${meta.reviewIDs})`, (err, resultsThree) => {
+            meta.reviewIDs = meta.reviewIDs.split(', ');
+            if (err) {
+              console.log(err)
+              callback(err);
+            } else {
+              for (let i = 0; i < resultsThree.rows.length; i++) {
+                meta.characteristics[resultsThree.rows[i].characteristic_id].value += resultsThree.rows[i].value;
+                console.log('METADATA', meta, 'REVIEW LENGTH', meta.reviewIDs.length)
+              }
+              for (let key in meta.characteristics) {
+                meta.characteristics[key].value = meta.characteristics[key].value / meta.reviewIDs.length;
+              }
+              console.log('METADATA', meta)
+              callback(results.rows);
+            }
+          });
+        }
+      });
     }
-    db.end();
   });
 };
 
