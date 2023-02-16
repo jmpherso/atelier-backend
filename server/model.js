@@ -51,13 +51,26 @@ const getProductMeta = (product_id, callback) => {
             } else {
               for (let i = 0; i < resultsThree.rows.length; i++) {
                 meta.characteristics[resultsThree.rows[i].characteristic_id].value += resultsThree.rows[i].value;
-                console.log('METADATA', meta, 'REVIEW LENGTH', meta.reviewIDs.length)
               }
               for (let key in meta.characteristics) {
                 meta.characteristics[key].value = meta.characteristics[key].value / meta.reviewIDs.length;
               }
               console.log('METADATA', meta)
-              callback(results.rows);
+              var resultObject = {};
+              resultObject.product_id = product_id;
+              resultObject.ratings = {};
+              for (let i = 0; i < meta.ratings.length; i++) {
+                resultObject.ratings[i + 1] = meta.ratings[i];
+              }
+              resultObject.recommended = meta.recommended;
+              resultObject.characteristics = {};
+              for (let key in meta.characteristics) {
+                resultObject.characteristics[meta.characteristics[key].name] = {};
+                resultObject.characteristics[meta.characteristics[key].name].id = meta.characteristics[key].id;
+                resultObject.characteristics[meta.characteristics[key].name].value = meta.characteristics[key].value;
+              }
+              console.log('RESULT OBJECT', resultObject);
+              callback(resultObject);
             }
           });
         }
