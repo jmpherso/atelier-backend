@@ -9,6 +9,19 @@ const client = new Client({
     port: 5432,
 });
 
+const body = {
+  review_id: 214800,
+  product_id: 37313,
+  rating: 5,
+  summary: 'This product was great!',
+  body: 'I really did or did not like this product based on whether it was sustainably sourced.',
+  recommend: true,
+  name: 'jbilas',
+  email: 'okokok@okoko.com',
+  photos: [],
+  characteristics: { 14: 5, 15: 5 }
+};
+
 async function queryExecutionTime(query) {
   const start = performance.now();
   await client.query(query);
@@ -26,8 +39,11 @@ async function functionExecutionTime(func, ...args) {
 async function test() {
     try {
       await client.connect();
-      await functionExecutionTime(model.getProductMeta, 37313, (results) => {});
-      await functionExecutionTime(model.getAllReviews, 37313, 250, 'newest', (results) => {});
+      await functionExecutionTime(model.postReview, body);
+      await functionExecutionTime(model.getProductMeta, 37313);
+      await functionExecutionTime(model.getAllReviews, 37313, 250, 'newest');
+      await functionExecutionTime(model.markReported, body);
+      await functionExecutionTime(model.markHelpful, body);
       await queryExecutionTime(`SELECT * FROM reviews WHERE product_id=37311 ORDER BY date DESC OFFSET 0 ROWS FETCH FIRST 250 ROWS ONLY`);
       await queryExecutionTime(`SELECT * FROM reviews_photos WHERE review_id IN (214800, 214801, 214803, 214807)`);
       await queryExecutionTime(`SELECT * FROM characteristic_reviews WHERE review_id IN (214800, 214801, 214803, 214807)`);
@@ -40,6 +56,7 @@ async function test() {
 }
 
 test();
+
 
 
 

@@ -29,19 +29,19 @@ const getAllReviews = async (product_id, count, sortParam) => {
     //Query requires a string of reviewIDs, so join the array into a string
     reviewIDs = reviewIDs.join(', ');
     //For loop to convert date to ISO format
-    for(let i = 0; i < results.rows.length; i++) {
-      results.rows[i].date = new Date(Number(results.rows[i].date)).toISOString().slice(0, 10);
-    }
+    results.rows.map((review) => {
+      review.date = new Date(Number(review.date)).toISOString().slice(0, 10);
+    })
     //Query DB for photos for each review
     const resultsTwo = await db.query(`SELECT * FROM reviews_photos WHERE review_id IN (${reviewIDs})`);
-      //For loop to add photos with matching review ID to each review (might be able to optimize this)
-      for(let i = 0; i < results.rows.length; i++) {
-        for(let j = 0; j < resultsTwo.rows.length; j++) {
-          if(results.rows[i].id === resultsTwo.rows[j].review_id) {
-            results.rows[i].photos.push({id : resultsTwo.rows[j].id, url : resultsTwo.rows[j].url});
-          }
+    //For loop to add photos with matching review ID to each review (might be able to optimize this)
+    for(let i = 0; i < results.rows.length; i++) {
+      for(let j = 0; j < resultsTwo.rows.length; j++) {
+        if(results.rows[i].id === resultsTwo.rows[j].review_id) {
+          results.rows[i].photos.push({id : resultsTwo.rows[j].id, url : resultsTwo.rows[j].url});
         }
       }
+    }
     return {product : product_id, page : 0, count : count, results : results.rows};
   } catch (err) {
     console.log(err);
@@ -119,44 +119,30 @@ const getProductMeta = async (product_id) => {
 };
 
 //Function to post a review
-const postReview = (body, callback) => {
-  //Query DB to add review to reviews table
-  console.log(body);
-  db.query(`INSERT INTO reviews (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) VALUES (${body.product_id}, ${body.rating}, ${Number(new Date())}, '${body.summary}', '${body.body}', '${body.recommend}', 'false', '${body.name}', '${body.email}', 'null', 0) RETURNING id`, (err, results) => {
-    if (err) {
-      console.log(err);
-      callback(err);
-    } else {
-      //Create photoArray to be used in next query
-      let photoArray = body.photos.map((photo) => {
-        return `(${results.rows[0].id}, '${photo}')`;
-      });
-      photoArray = photoArray.join(', ');
-      //Query DB to add photos to reviews_photos table
-      db.query(`INSERT INTO reviews_photos (review_id, url) VALUES ${photoArray}`, (err, resultsTwo) => {
-        if (err) {
-          console.log(err);
-          callback(err);
-        } else {
-          //Create characterstic ID SQL string to be used in next query
-          let characteristicIDString = [];
-          for (let key in body.characteristics) {
-            characteristicIDString.push(`(${key}, ${results.rows[0].id}, ${body.characteristics[key]})`);
-          }
-          characteristicIDString = characteristicIDString.join(', ');
-          db.query(`INSERT INTO characteristic_reviews (characteristic_id, review_id, value) VALUES ${characteristicIDString}`, (err, resultsThree) => {
-            if (err) {
-              console.log(err);
-              callback(err);
-            } else {
-              //Return results to server
-              callback(results.rows);
-            }
-          });
-        }
-      });
+const postReview = async (body) => {
+  try {
+    //Query DB to add review to reviews table
+    const results = await db.query(`INSERT INTO reviews (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) VALUES (${body.product_id}, ${body.rating}, ${Number(new Date())}, '${body.summary}', '${body.body}', '${body.recommend}', 'false', '${body.name}', '${body.email}', 'null', 0) RETURNING id`);
+    //Create photo SQL string to be used in next query
+    let photoArray = body.photos.map((photo) => {
+      return `(${results.rows[0].id}, '${photo}')`;
+    });
+    photoArray = photoArray.join(', ');
+    //Query DB to add photos to reviews_photos table
+    const resultsTwo = await db.query(`INSERT INTO reviews_photos (review_id, url) VALUES ${photoArray}`);
+    //Create characterstic ID SQL string to be used in next query
+    let characteristicIDString = [];
+    for (let key in body.characteristics) {
+      characteristicIDString.push(`(${key}, ${results.rows[0].id}, ${body.characteristics[key]})`);
     }
-  });
+    characteristicIDString = characteristicIDString.join(', ');
+    //Query DB to add characteristic reviews to characteristic_reviews table
+    const resultsThree = await db.query(`INSERT INTO characteristic_reviews (characteristic_id, review_id, value) VALUES ${characteristicIDString}`);
+    return results.rows;
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
 };
 
 //Function to mark a review as helpful
@@ -174,9 +160,10 @@ const markHelpful = async (body) => {
 
 
 //Function to mark a review as reported
-const markReported = async (body, callback) => {
+const markReported = async (body) => {
   try {
-  const results = db.query(`UPDATE reviews SET reported = 'true' WHERE id = ${body.review_id}`);
+    //Query DB to update reported status of review
+    const results = await db.query(`UPDATE reviews SET reported = 'true' WHERE id = ${body.review_id}`);
     return results.rows;
   } catch (err) {
     console.log(err);
