@@ -16,13 +16,15 @@ app.use(express.json());
 // app.use(express.static(path.join(__dirname, '../public')));
 
 app.get('/reviews', (req, res) => {
-  model.getAllReviews(req.query.product_id, req.query.count, req.query['sort'], (results) => {
+  model.getAllReviews(req.query.product_id, req.query.count, req.query['sort'])
+  .then((results) => {
     res.send(results);
   });
 });
 
 app.get('/reviews/meta', (req, res) => {
-  model.getProductMeta(req.query.product_id, (results) => {
+  model.getProductMeta(req.query.product_id)
+  .then((results) => {
     res.send(results);
   });
 });
