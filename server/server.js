@@ -18,6 +18,7 @@ app.use(express.json());
 app.get('/reviews', (req, res) => {
   model.getAllReviews(req.query.product_id, req.query.count, req.query['sort'])
   .then((results) => {
+    res.statusCode = 200;
     res.send(results);
   });
 });
@@ -25,6 +26,7 @@ app.get('/reviews', (req, res) => {
 app.get('/reviews/meta', (req, res) => {
   model.getProductMeta(req.query.product_id)
   .then((results) => {
+    res.statusCode = 200;
     res.send(results);
   });
 });
@@ -36,13 +38,13 @@ app.post('/reviews', (req, res) => {
 });
 
 app.put('/reviews/:review_id/helpful', (req, res) => {
-  model.markHelpful(req.params, (result) => {
+  model.markHelpful(req.params.review_id, (result) => {
     res.sendStatus(201).send();
   });
 });
 
 app.put('/reviews/:review_id/report', (req, res) => {
-  model.markReported(req.params, (result) => {
+  model.markReported(req.params.review_id, (result) => {
     res.sendStatus(201).send();
   });
 });

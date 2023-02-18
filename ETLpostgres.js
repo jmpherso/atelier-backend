@@ -99,6 +99,17 @@ const loadReferenceData = async () => {
     ]);
 };
 
+//Create async function to update sequence ids to end of table.
+//COPY command does not update sequence ids, so this is necessary.
+const updateMaxId = async () => {
+    return Promise.all([
+        execute('SELECT setval(\'reviews_id_seq\', (SELECT MAX(id) FROM reviews));'),
+        execute('SELECT setval(\'characteristics_id_seq\', (SELECT MAX(id) FROM characteristics));'),
+        execute('SELECT setval(\'reviews_photos_id_seq\', (SELECT MAX(id) FROM reviews_photos));'),
+        execute('SELECT setval(\'characteristic_reviews_id_seq\', (SELECT MAX(id) FROM characteristic_reviews));')
+    ]);
+};
+
 //Create async function to run all functions
 const App = async () => {
     await client.connect();
@@ -107,7 +118,9 @@ const App = async () => {
     await createReferenceTables(); //Must load after createMainTables
     await loadMainData();
     await loadReferenceData(); //Must load after loadMainData
+    await updateMaxId();
     await client.end();
+
 };
 
 App();

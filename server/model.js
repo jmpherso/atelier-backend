@@ -123,13 +123,15 @@ const postReview = async (body) => {
   try {
     //Query DB to add review to reviews table
     const results = await db.query(`INSERT INTO reviews (product_id, rating, date, summary, body, recommend, reported, reviewer_name, reviewer_email, response, helpfulness) VALUES (${body.product_id}, ${body.rating}, ${Number(new Date())}, '${body.summary}', '${body.body}', '${body.recommend}', 'false', '${body.name}', '${body.email}', 'null', 0) RETURNING id`);
-    //Create photo SQL string to be used in next query
-    let photoArray = body.photos.map((photo) => {
-      return `(${results.rows[0].id}, '${photo}')`;
-    });
-    photoArray = photoArray.join(', ');
-    //Query DB to add photos to reviews_photos table
-    const resultsTwo = await db.query(`INSERT INTO reviews_photos (review_id, url) VALUES ${photoArray}`);
+    if (body.photos.length > 0) {
+      //Create array of photo SQL strings to be used in next query
+      let photoArray = body.photos.map((photo) => {
+        return `(${results.rows[0].id}, '${photo}')`;
+      });
+      photoArray = photoArray.join(', ');
+      //Query DB to add photos to reviews_photos table if photos were included in request
+      const resultsTwo = await db.query(`INSERT INTO reviews_photos (review_id, url) VALUES ${photoArray}`);
+    }
     //Create characterstic ID SQL string to be used in next query
     let characteristicIDString = [];
     for (let key in body.characteristics) {
@@ -138,19 +140,19 @@ const postReview = async (body) => {
     characteristicIDString = characteristicIDString.join(', ');
     //Query DB to add characteristic reviews to characteristic_reviews table
     const resultsThree = await db.query(`INSERT INTO characteristic_reviews (characteristic_id, review_id, value) VALUES ${characteristicIDString}`);
-    return results.rows;
+    return results.rows[0].id;
   } catch (err) {
-    console.log(err);
+    console.log('ERR', err);
     return err;
   }
 };
 
 //Function to mark a review as helpful
-const markHelpful = async (body) => {
+const markHelpful = async (review_id) => {
   try {
     //Query DB to update helpfulness of review
-    const results = await db.query(`UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = ${body.review_id}`);
-    return results.rows;
+    const results = await db.query(`UPDATE reviews SET helpfulness = helpfulness + 1 WHERE id = ${review_id}`);
+    return results;
   } catch (err) {
     console.log(err);
     return err;
@@ -160,11 +162,11 @@ const markHelpful = async (body) => {
 
 
 //Function to mark a review as reported
-const markReported = async (body) => {
+const markReported = async (review_id) => {
   try {
     //Query DB to update reported status of review
-    const results = await db.query(`UPDATE reviews SET reported = 'true' WHERE id = ${body.review_id}`);
-    return results.rows;
+    const results = await db.query(`UPDATE reviews SET reported = 'true' WHERE id = ${review_id}`);
+    return results;
   } catch (err) {
     console.log(err);
     return err;

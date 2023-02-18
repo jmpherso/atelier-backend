@@ -19,21 +19,39 @@ const body = {
   name: 'jbilas',
   email: 'okokok@okoko.com',
   photos: [],
-  characteristics: { 14: 5, 15: 5 }
+  characteristics: { 124808: 5 }
 };
+
+async function queryAverageExecutionTime(query) {
+  const start = performance.now();
+  for (let i = 0; i < 10; i++) {
+    await client.query(query);
+  }
+  const end = performance.now();
+  console.log(`${query} in ${(end - start)/10} ms average over 10 runs.`);
+}
 
 async function queryExecutionTime(query) {
   const start = performance.now();
   await client.query(query);
   const end = performance.now();
-  console.log(`${query} in ${end - start} ms`);
+  console.log(`${query} in ${(end - start)} ms`);
+}
+
+async function functionAverageExecutionTime(func, ...args) {
+  const start = performance.now();
+  for (let i = 0; i < 10; i++) {
+    await func(...args);
+  }
+  const end = performance.now();
+  console.log(`Execution time of ${func.name}: ${(end - start)/10} ms average over 100 runs.`);
 }
 
 async function functionExecutionTime(func, ...args) {
   const start = performance.now();
   await func(...args);
   const end = performance.now();
-  console.log(`Execution time of ${func.name}: ${end - start} ms`);
+  console.log(`Execution time of ${func.name}: ${(end - start)} ms`);
 }
 
 async function test() {
@@ -49,7 +67,7 @@ async function test() {
       await queryExecutionTime(`SELECT * FROM characteristic_reviews WHERE review_id IN (214800, 214801, 214803, 214807)`);
       await queryExecutionTime(`SELECT * FROM characteristics WHERE product_id=37311`);
     } catch (err) {
-      console.log(err);
+      console.log('ERROR', err);
     } finally {
       client.end();
     }
