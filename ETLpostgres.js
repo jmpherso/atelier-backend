@@ -129,6 +129,7 @@ const App = async () => {
     await loadMainData();
     await loadReferenceData(); //Must load after loadMainData
     await updateMaxId();
+    await createIndexes();
     await client.end();
 
 };

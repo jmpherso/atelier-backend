@@ -15,6 +15,10 @@ app.use(express.json());
 // app.use(express.urlencoded());
 // app.use(express.static(path.join(__dirname, '../public')));
 
+app.get('loaderio-4752e35eb062480bb88a9ea8f3008b23'), (req, res) => {
+  res.send('loaderio-4752e35eb062480bb88a9ea8f3008b23');
+};
+
 app.get('/reviews', (req, res) => {
   model.getAllReviews(req.query.product_id, req.query.count, req.query['sort'])
   .then((results) => {
