@@ -11,7 +11,7 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(cors());
-app.use(logger);
+//app.use(logger);
 app.use(express.json());
 // app.use(express.urlencoded());
 // app.use(express.static(path.join(__dirname, '../public')));
