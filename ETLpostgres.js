@@ -24,6 +24,7 @@ const execute = async (query) => {
                 console.log(`${res.rowCount} ROWS INSERTED into ${querySplit[1].toUpperCase()}`);
             }
         }
+
     } catch (err) {
         console.error(err);
     }
@@ -85,8 +86,8 @@ const createReferenceTables = async () => {
 //Create async function to load data
 const loadMainData = async () => {
     return Promise.all([
-        execute('COPY reviews FROM \'/home/jmpherso/course/RatingsAPI/reviews.csv\' DELIMITER \',\' CSV HEADER'),
-        execute('COPY characteristics FROM \'/home/jmpherso/course/RatingsAPI/characteristics.csv\' DELIMITER \',\' CSV HEADER')
+        execute('COPY reviews FROM \'/RatingsAPI/reviews.csv\' DELIMITER \',\' CSV HEADER'),
+        execute('COPY characteristics FROM \'/RatingsAPI/characteristics.csv\' DELIMITER \',\' CSV HEADER')
     ]);
 };
 
@@ -94,8 +95,8 @@ const loadMainData = async () => {
 //Had to create separate function because of foreign key constraints
 const loadReferenceData = async () => {
     return Promise.all([
-        execute('COPY characteristic_reviews FROM \'/home/jmpherso/course/RatingsAPI/characteristic_reviews.csv\' DELIMITER \',\' CSV HEADER'),
-        execute('COPY reviews_photos FROM \'/home/jmpherso/course/RatingsAPI/reviews_photos.csv\' DELIMITER \',\' CSV HEADER')
+        execute('COPY characteristic_reviews FROM \'/RatingsAPI/characteristic_reviews.csv\' DELIMITER \',\' CSV HEADER'),
+        execute('COPY reviews_photos FROM \'/RatingsAPI/reviews_photos.csv\' DELIMITER \',\' CSV HEADER')
     ]);
 };
 
@@ -110,6 +111,15 @@ const updateMaxId = async () => {
     ]);
 };
 
+//Create indexs on tables
+const createIndexes = async () => {
+    return Promise.all([
+        execute('CREATE INDEX idx_reviews_productid ON reviews(product_id);'),
+        execute('CREATE INDEX idx_photos_reviewid ON reviews_photos(review_id);'),
+        execute('CREATE INDEX idx_charreview_reviewid ON characteristic_reviews(review_id);'),
+        execute('CREATE INDEX idx_characteristics_productid ON characteristics(product_id);')
+    ]);
+};
 //Create async function to run all functions
 const App = async () => {
     await client.connect();
