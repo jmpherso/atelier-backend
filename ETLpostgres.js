@@ -86,8 +86,8 @@ const createReferenceTables = async () => {
 //Create async function to load data
 const loadMainData = async () => {
     return Promise.all([
-        execute('COPY reviews FROM \'/RatingsAPI/reviews.csv\' DELIMITER \',\' CSV HEADER'),
-        execute('COPY characteristics FROM \'/RatingsAPI/characteristics.csv\' DELIMITER \',\' CSV HEADER')
+        execute('COPY reviews FROM \'/home/ubuntu/RatingsAPI/reviews.csv\' DELIMITER \',\' CSV HEADER'),
+        execute('COPY characteristics FROM \'/home/ubuntu/RatingsAPI/characteristics.csv\' DELIMITER \',\' CSV HEADER')
     ]);
 };
 
@@ -95,8 +95,8 @@ const loadMainData = async () => {
 //Had to create separate function because of foreign key constraints
 const loadReferenceData = async () => {
     return Promise.all([
-        execute('COPY characteristic_reviews FROM \'/RatingsAPI/characteristic_reviews.csv\' DELIMITER \',\' CSV HEADER'),
-        execute('COPY reviews_photos FROM \'/RatingsAPI/reviews_photos.csv\' DELIMITER \',\' CSV HEADER')
+        execute('COPY characteristic_reviews FROM \'/home/ubuntu/RatingsAPI/characteristic_reviews.csv\' DELIMITER \',\' CSV HEADER'),
+        execute('COPY reviews_photos FROM \'/home/ubuntu/RatingsAPI/reviews_photos.csv\' DELIMITER \',\' CSV HEADER')
     ]);
 };
 
