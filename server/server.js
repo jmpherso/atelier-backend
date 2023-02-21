@@ -1,5 +1,4 @@
 require('dotenv').config();
-const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -17,9 +16,9 @@ app.use(express.json());
 // app.use(express.urlencoded());
 // app.use(express.static(path.join(__dirname, '../public')));
 
-app.get('/loaderio-cf93fe6ecd04c8959f7900f57c37e239'), (req, res) => {
-  res.send('loaderio-cf93fe6ecd04c8959f7900f57c37e239');
-};
+//app.get('/loaderio-cf93fe6ecd04c8959f7900f57c37e239'), (req, res) => {
+//  res.send('loaderio-cf93fe6ecd04c8959f7900f57c37e239');
+//};
 
 app.get('/reviews', (req, res) => {
   model.getAllReviews(req.query.product_id, req.query.count, req.query['sort'])
