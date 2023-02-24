@@ -6,11 +6,7 @@ const model = require('./model');
 const logger = require('./logger');
 const axios = require('axios');
 // const compression = require('compression');
-var posix = require('posix');
 
-// raise maximum number of open file descriptors to 10k,
-// hard limit is left unchanged
-posix.setrlimit('nofile', { soft: 10000 });
 
 const app = express();
 
