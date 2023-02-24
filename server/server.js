@@ -6,6 +6,11 @@ const model = require('./model');
 const logger = require('./logger');
 const axios = require('axios');
 // const compression = require('compression');
+var posix = require('posix');
+
+// raise maximum number of open file descriptors to 10k,
+// hard limit is left unchanged
+posix.setrlimit('nofile', { soft: 10000 });
 
 const app = express();
 
@@ -14,11 +19,6 @@ app.use(cors());
 //app.use(logger);
 app.use(express.json());
 // app.use(express.urlencoded());
-// app.use(express.static(path.join(__dirname, '../public')));
-
-//app.get('/loaderio-cf93fe6ecd04c8959f7900f57c37e239'), (req, res) => {
-//  res.send('loaderio-cf93fe6ecd04c8959f7900f57c37e239');
-//};
 
 app.get('/reviews', (req, res) => {
   model.getAllReviews(req.query.product_id, req.query.count, req.query['sort'])
