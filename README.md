@@ -1,3 +1,9 @@
+
+
+# Atelier API
+API for the ratings portion of Atelier storefront backend. This repository is packaged as a whole for convenience and includes the ETL scripts to load database data, NGINX for loadbalancing, as well as the API server itself. This single repository can be cloned across multiple AWS instances to achieve differently functionality in each.
+
+## Table of Contents
 - [Atelier API](#atelier-api)
   * [Ratings and Review API servers](#ratings-and-review-api-servers)
     + [Optimizations](#optimizations)
@@ -6,9 +12,6 @@
     + [ETL scripts](#etl-scripts)
     + [Optimizations](#optimizations-1)
   * [Final Results](#final-results)
-
-# Atelier API
-API for the ratings portion of Atelier storefront backend. This repository is packaged as a whole for convenience and includes the ETL scripts to load database data, NGINX for loadbalancing, as well as the API server itself. This single repository can be cloned across multiple AWS instances to achieve differently functionality in each.
 
 ## Ratings and Review API servers  
 The server the API is running on is a basic express server utilizing axios that handles POST/GET/PUT requests and calls 'model' functions to interact with the PostgreSQL database.
