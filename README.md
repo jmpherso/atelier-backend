@@ -44,8 +44,8 @@ For importing data to Mongo from CSV files :
 ### Optimizations
 The most significant optimization to the database was indexing the tables on the columns that were being searched by the API. Since the database is enormous this reduced initial query times down from ~500ms to ~1ms.  
 
-## Final Results
+## ✨ Final Results
 
 This is the result of an NGINX load balancer distributing traffic to 3 API servers connecting to a single PostgreSQL database, showing roughly a limit of 1740 client requests per second with stable connection results. Pushing the API beyond this results in errors starting to arise and significant (1000ms+) spikes in response time. Obvious further scaling would include more horizontal scaling as well as invstigation of more suitable AWS instances, as the t2.micro instances being used may have upper limits we're nearing or at regardless of our code.
 
-[Image](notion://www.notion.so/image/https%3A%2F%2Fs3-us-west-2.amazonaws.com%2Fsecure.notion-static.com%2F2f754af3-4a64-47da-9546-984106e94195%2FUntitled.png?id=af3bd73f-3323-4f87-b660-fd88f3aa6d4b&table=block&spaceId=baa5a174-598d-4bc6-a46a-7055d7896916&width=2000&userId=9ac17aca-40e0-4416-a479-0617a2c25b98&cache=v2)
+[Image](https://i.imgur.com/dTDuStO.png)
