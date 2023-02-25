@@ -1,3 +1,12 @@
+- [Atelier API](#atelier-api)
+  * [Ratings and Review API servers](#ratings-and-review-api-servers)
+    + [Optimizations](#optimizations)
+    + [Load Balancing](#load-balancing)
+  * [Ratings and Review Database](#ratings-and-review-database)
+    + [ETL scripts](#etl-scripts)
+    + [Optimizations](#optimizations-1)
+  * [Final Results](#final-results)
+
 # Atelier API
 API for the ratings portion of Atelier storefront backend. This repository is packaged as a whole for convenience and includes the ETL scripts to load database data, NGINX for loadbalancing, as well as the API server itself. This single repository can be cloned across multiple AWS instances to achieve differently functionality in each.
 
