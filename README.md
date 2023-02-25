@@ -48,4 +48,4 @@ The most significant optimization to the database was indexing the tables on the
 
 This is the result of an NGINX load balancer distributing traffic to 3 API servers connecting to a single PostgreSQL database, showing roughly a limit of 1740 client requests per second with stable connection results. Pushing the API beyond this results in errors starting to arise and significant (1000ms+) spikes in response time. Obvious further scaling would include more horizontal scaling as well as invstigation of more suitable AWS instances, as the t2.micro instances being used may have upper limits we're nearing or at regardless of our code.
 
-[Image](https://i.imgur.com/dTDuStO.png)
+![Image](https://i.imgur.com/dTDuStO.png)
